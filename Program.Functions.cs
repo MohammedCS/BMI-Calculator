@@ -133,6 +133,14 @@ public partial class Program
             _ => default
         };
     
+    public static double CalculateAvg() 
+    {
+        double sum = 0;
+        foreach(var user in _users)
+            sum += user.BMI;
+        return Math.Round(sum / _users.Count, 2);
+    }
+    
     public static void PrintReport(User user)
     {
         WriteLine("\t\tBMI Report\t\t\n");
@@ -160,7 +168,7 @@ public partial class Program
     public static void ListOptions()
     {
         start:
-        Write("\n Choose the number of the operation: \n1- Run Program Again\n2- Terminate Program\n3 - List All Reports\n");
+        Write("\n Choose the number of the operation: \n1- Run Program Again\n2- Terminate Program\n3 - List All Reports\n4 - Print The Average For All Users\n");
         Write("=> ");
         int selected = int.Parse(ReadLine()!);
         switch(selected)
@@ -175,6 +183,9 @@ public partial class Program
                 break;
             case 3:
                 ListReports();
+                goto start;
+            case 4:
+                WriteLine($"BMI Average = {CalculateAvg()}");
                 goto start;
         }
     }
