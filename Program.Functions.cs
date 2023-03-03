@@ -49,12 +49,12 @@ public partial class Program
         {
             Write("Gender (Male, Female): ");
             string? input = ReadLine()?.ToLower();
-            if (input == "male")
+            if (input == "male" || input == "m")
             {
                 user.Gender = Gender.Male;
                 break;
             }
-            else if (input == "female")
+            else if (input == "female" || input == "f")
             {
                 user.Gender = Gender.Female;
                 break;
