@@ -10,7 +10,7 @@ public class User
     public double Height { get; set; }
     public double Weight { get; set; }
     public double BMI { get; set; }
-    public int Age { get; set; }
+    public uint Age { get; set; }
     public BMICategory Category { get; set; }
 
     public string FullName => $"{FirstName} {LastName}";

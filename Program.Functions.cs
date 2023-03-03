@@ -2,10 +2,34 @@ namespace BMICalculator;
 
 public partial class Program
 {
+    private static bool _again = false; 
+    private static List<User> _users = new();
+
     public static void PrintWelcomeMessage()
     {
         WriteLine("\n\n\t\tBMI Calculator\t\t");
         WriteLine("------------------------------------------------");
+    }
+
+    public static uint GetNumberOfUsers()
+    {
+        Write("Enter How Many Users: ");
+
+        uint numOfUsers = default;
+        while(true)
+        {
+            string? input = ReadLine();
+            if (uint.TryParse(input, out uint num))
+            {
+                numOfUsers = num;
+                break;
+            }
+            else
+            {
+                WriteLine("Please Provide Right Number.");
+            }
+        }
+        return numOfUsers;
     }
 
     public static void TakeUserData(User user)
@@ -32,16 +56,16 @@ public partial class Program
 
         while(true)
         {
-            Write("Age: ");
+            Write("Age (2 - 120): ");
             string? input = ReadLine();
-            if (int.TryParse(input, out int age))
+            if (uint.TryParse(input, out uint age) && age >= 2 && age <= 120)
             {
                 user.Age = age;
                 break;
             }
             else
             {
-                WriteLine("You Should Provide Age & It Should Be In Right Format!!");
+                WriteLine("\n!! You Should Provide Age & It Should Be In Right Format!!\n");
             }
         }
 
@@ -60,43 +84,45 @@ public partial class Program
                 break;
             }
             else
-                WriteLine("You Should Provide Gender!!");
+                WriteLine("\n!! You Should Provide Gender !!\n");
         }
 
         while(true)
         {
-            Write("Height (cm): ");
+            Write("Height (50 - 280)(cm): ");
             string? input = ReadLine();
-            if (double.TryParse(input, out double height))
+            if (double.TryParse(input, out double height) && height >= 50 && height <= 280)
             {
                 user.Height = height;
                 break;
             }
             else
             {
-                WriteLine("You Should Provide Height & It Should Be In Right Format!!");
+                WriteLine("\n!! You Should Provide Height & It Should Be In Right Format !!\n");
             }
         }
 
         while(true)
         {
-            Write("Weight (kg): ");
+            Write("Weight (5 - 635)(kg): ");
             string? input = ReadLine();
-            if (double.TryParse(input, out double weight))
+            if (double.TryParse(input, out double weight) && weight >= 5 && weight <= 635)
             {
                 user.Weight = weight;
                 break;
             }
             else
             {
-                WriteLine("You Should Provide Weight & It Should Be In Right Format!!");
+                WriteLine("\n!! You Should Provide Weight & It Should Be In Right Format !!\n");
             }
         }
         WriteLine("------------------------------------------------");
     }
 
-    public static void CalculateBMI(User user) =>
+    public static void CalculateBMI(User user)
+    {
         user.BMI = Math.Round(user.Weight / Math.Pow((user.Height / 100D), 2), 1);
+    }
 
     public static void ClassifyUser(User user) =>
         user.Category = user.BMI switch {
@@ -113,13 +139,68 @@ public partial class Program
         WriteLine($"Hi {user.FullName} This is your BMI Report\n");
         WriteLine($"BMI Result = {user.BMI}");
         WriteLine($"BMI Classification = {user.Category}");
+        WriteLine("------------------------------------------------");
     }
 
-    public static bool Again()
+    public static void ListReports()
     {
-        Write("\n\nDo You Want To Calculate Again Or Not (y/N): ");
-        string? input = ReadLine();
-        return input?.ToUpper() == "Y" ||
-            input?.ToUpper() == "YES";
+        WriteLine("------------------------------------------------");
+        foreach(var user in _users)
+        {
+            WriteLine($"{user.FullName}'s Report: \n");
+            WriteLine($"Age       = {user.Age}");
+            WriteLine($"Height    = {user.Height}");
+            WriteLine($"Weight    = {user.Weight}");
+            WriteLine($"BMI       = {user.BMI}");
+            WriteLine($"Diagnosis = {user.Category}");
+            WriteLine("------------------------------------------------");
+        }
+    }
+
+    public static void ListOptions()
+    {
+        start:
+        Write("\n Choose the number of the operation: \n1- Run Program Again\n2- Terminate Program\n3 - List All Reports\n");
+        Write("=> ");
+        int selected = int.Parse(ReadLine()!);
+        switch(selected)
+        {
+            case 1:
+                _again = true;
+                _users.Clear();
+                break;
+            case 2:
+            default:
+                _again = false;
+                break;
+            case 3:
+                ListReports();
+                goto start;
+        }
+    }
+
+    public static void RunApp()
+    {
+        while(true)
+        {
+            PrintWelcomeMessage();
+            uint counter = GetNumberOfUsers();
+            for(int i = 1; i <= counter; i++)
+            {
+                User user = new();
+                WriteLine($"\n\t\tUser_{i} Calculation\t\t\n");
+                TakeUserData(user);
+                CalculateBMI(user);
+                ClassifyUser(user);
+                PrintReport(user);
+                _users.Add(user);
+            }
+            ListOptions();
+            if (!_again)
+            {
+                WriteLine("Program Has Terminated !!");
+                break;
+            }
+        }
     }
 }
